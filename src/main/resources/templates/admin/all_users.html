@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="static/inc/head :: head"></head>
+<body>
+<style th:insert="static/lib/css/main.css"></style>
+<div class="container-fluid">
+    <div th:replace="static/inc/top_info_div :: top_info_div"></div>
+    <div class="row no-gutters main-row">
+        <div class="col-md-2 sidebar">
+            <button type="button" class="btn btn-primary btn-lg admin-sidebar-btn-admin-page"
+                    onclick="window.location.href='/admin/all_users'">Admin
+            </button>
+            <button type="button" class="btn btn-primary btn-lg user-sidebar-btn-admin-page"
+                    onclick="window.location.href='/user/profile'">User
+            </button>
+        </div>
+        <div class="col-md-10 main-content">
+            <h1>Admin panel</h1>
+            <div class="top-toggle-buttons">
+                <span id="users-table-btn">Users table</span>
+                <span id="add-new-user-btn">New user</span>
+            </div>
+            <div class="content-wrapper">
+                <div th:replace="static/inc/all_users :: all_users"></div>
+                <div th:replace="static/inc/add_new_user :: add_new_user"></div>
+            </div>
+
+        </div>
+    </div>
+    <footer th:replace="static/inc/footer :: footer"></footer>
+</div>
+<th:block th:each="user : ${userList}">
+    <div th:replace="static/inc/modal-update :: modal-update"></div>
+    <div th:replace="static/inc/modal-delete :: modal-delete"></div>
+</th:block>
+<script>
+    $(document).ready(function ($) {
+        WIDTH = $(window).width();
+        HEIGHT = $(window).height();
+
+        $('.main-row').css("height", HEIGHT - $('.top_info_div').height() + "px");
+        $('#add-new-user-btn').click(function () {
+            $(this).css({"color": "#000", "background": "#fff", "border-color": "#D5D1D1"});
+            $('#users-table-btn').css({"color": "#007bff", "background": "transparent", "border-color": "transparent"});
+            $('.admin-page-content-wrapper').css("display", "none");
+            $('.add-new-user-content-wrapper').css("display", "block");
+        })
+        $('#users-table-btn').click(function () {
+            $(this).css({"color": "#000", "background": "#fff", "border-color": "#D5D1D1"});
+            $('#add-new-user-btn').css({
+                "color": "#007bff",
+                "background": "transparent",
+                "border-color": "transparent"
+            });
+            $('.admin-page-content-wrapper').css("display", "block");
+            $('.add-new-user-content-wrapper').css("display", "none");
+        })
+
+    });
+</script>
+</body>
+</html>
