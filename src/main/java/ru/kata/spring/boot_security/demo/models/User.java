@@ -21,6 +21,12 @@ public class User implements UserDetails {
     private Integer age;
     private String email;
     private String password;
+
+    public String getRole() {
+        return role;
+    }
+
+    private String role;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -83,12 +89,13 @@ public class User implements UserDetails {
     public Set<Role> getRoles() {
         return roles;
     }
-    public String rolesToString(){
+
+    public String rolesToString() {
         StringBuilder roles = new StringBuilder();
-        if(this.roles.toString().contains("ADMIN")){
+        if (this.roles.toString().contains("ADMIN")) {
             roles.append("ADMIN ");
         }
-        if(this.roles.toString().contains("USER")){
+        if (this.roles.toString().contains("USER")) {
             roles.append("USER ");
         }
         return roles.toString().trim();
@@ -150,7 +157,7 @@ public class User implements UserDetails {
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", roles=" + roles.toString() +
+                ", roles=" + role +
                 '}';
     }
 }

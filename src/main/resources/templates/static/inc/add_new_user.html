@@ -1,8 +1,8 @@
 <div th:fragment="add_new_user" class="add-new-user-content-wrapper">
     <span id="about-user-table-header">Add new user</span>
     <div class="all-users-table-wrapper">
-        <form class="new-user-form"  action="saveUser" th:modelAttribute="user" method="post">
-            <input type="hidden" name="id"><br>
+        <form class="new-user-form" th:modelAttribute="user">
+<!--            <input type="hidden" name="id"><br>-->
             <label for="new-name">First name</label>
             <input id="new-name" type="text" name="name"><br>
             <label for="new-surname">Last name</label>
@@ -14,13 +14,13 @@
             <label for="new-pass">Password</label>
             <input id="new-pass" type="password" name="password"><br>
             <label for="new-roles">Role</label>
-            <select name="role" size="2" id="new-roles">
+            <select name="new-roles" size="2" id="new-roles">
                 <!--                        <select class="roles-select" id="roles">-->
-                <option value="admin">ADMIN</option>
-                <option value="user">USER</option>
+                <option id="new-admin" value="ADMIN">ADMIN</option>
+                <option id="new-user" value="USER">USER</option>
             </select>
             <br>
-            <button type="submit button" style="font-size: 22px; margin: 20px" class="btn btn-success">Add new user</button>
+            <button type="button" style="font-size: 22px; margin: 20px" class="add-user btn btn-success">Add new user</button>
         </form>
     </div>
 </div>

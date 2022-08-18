@@ -42,14 +42,6 @@ public class UserServiceImpl implements UserService {
         roleAdmin.setId(1);
         roleUser.setId(2);
         Set<Role> roles = new HashSet<>();
-//        if(user.getRoles() == null){
-//            Set<Role> roles = new HashSet<>();
-//            roles.add(roleUser);
-//            if(isAdmin){
-//                roles.add(roleAdmin);
-//            }
-//            user.setRoles(roles);
-//        }
         if(isAdmin){
             roles.add(roleAdmin);
         }
@@ -57,9 +49,7 @@ public class UserServiceImpl implements UserService {
             roles.add(roleUser);
         }
         user.setRoles(roles);
-        //if(user.getPassword().length() < 20){
-            user.setPassword(encoder.encode(user.getPassword()));
-        //}
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -70,7 +60,7 @@ public class UserServiceImpl implements UserService {
         Role roleUser = new Role("ROLE_USER");
         roleAdmin.setId(1);
         roleUser.setId(2);
-        boolean isAdmin = Objects.equals(admin, "admin");
+        boolean isAdmin = Objects.equals(admin, "ADMIN");
         if(user.getPassword().isEmpty()){
             user.setPassword(findByID(user.getId()).getPassword());
         }

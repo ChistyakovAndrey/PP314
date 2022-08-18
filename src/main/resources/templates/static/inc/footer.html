@@ -1,5 +1,317 @@
 <footer th:fragment="footer">
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script>
+        $(document).on("click", ".btn-personal-del", function () {
+            let userDelete = fetch('/api/users/' + $(this).attr('data-id')).then(
+                user => user.json()
+            ).then(user => {
+                    $('#admin-delete').attr("selected", false)
+                    $('#user-delete').attr("selected", false)
+                    if (user.role === "ADMIN") {
+                        $('#admin-delete').attr("selected", true)
+                    } else {
+                        $('#user-delete').attr("selected", true)
+                    }
+                    $('#id-delete').val(user.id)
+                    $('#id-del').text(user.id)
+                    $('#name-del').text(user.name)
+                    $('#surname-del').text(user.surname)
+                    $('#age-del').text(user.age)
+                    $('#email-del').text(user.email)
+                }
+            )
+        });
+        $(document).on("click", ".btn-del", function () {
+
+            let user = {
+                'id': $('#id-del').text(),
+                'name': $('#name-del').text(),
+                'surname': $('#surname-del').text(),
+                'age': $('#age-del').text(),
+                'email': $('#email-del').text(),
+                // 'password': $('#pass-update').text(),
+                'role': $('#roles').val()
+            }
+            let deleteRequest = new Request('/api/users/' + $('#id-del').text(), {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            })
+            let jsonDelete = fetch(deleteRequest).then(a => fetch('/api/users').then(r => {
+                return r.json()
+            }));
+            $('.users-table').html(" <tr>\n" +
+                "                <th>ID</th>\n" +
+                "                <th>First Name</th>\n" +
+                "                <th>Last Name</th>\n" +
+                "                <th>Age</th>\n" +
+                "                <th>Email</th>\n" +
+                "                <th>Role</th>\n" +
+                "                <th>Edit</th>\n" +
+                "                <th>Delete</th>\n" +
+                "            </tr>");
+
+            jsonDelete.then(a => Array.from(a)).then(array =>
+                array.forEach(aa =>
+                    $('.users-table').append(
+                        "<tr class=\"dd\" style=\"background: #eee\">" +
+                        "<td>" + aa.id + "</td>" +
+                        "<td>" + aa.name + "</td>" +
+                        "<td>" + aa.surname + "</td>" +
+                        "<td>" + aa.age + "</td>" +
+                        "<td>" + aa.email + "</td>" +
+                        "<td>" + aa.role + "</td>" +
+                        "                    <td>\n" +
+                        "                        <button data-id='" + aa.id + "' type=\"button\"" +
+                        " class=\"btn-personal-update btn btn-info\"\n" +
+                        "                                data-toggle=\"modal\" data-target=\"#_update\">Edit\n" +
+                        "                        </button>\n" +
+                        "                    </td>\n" +
+                        "                    <td>\n" +
+                        "                        <button data-id='" + aa.id + "' type=\"button\" class=\"btn-personal-del btn btn-danger\"\n" +
+                        "                                data-toggle=\"modal\" data-target=\"#del_user\">Delete\n" +
+                        "                        </button>\n" +
+                        "                    </td>\n" +
+                        "                </tr>"
+                    )
+                ),
+            );
+        })
+    </script>
+    <script>
+        $(document).on("click", ".btn-personal-update", function () {
+            let userUpdate = fetch('/api/users/' + $(this).attr('data-id')).then(
+                user => user.json()
+            ).then(user => {
+                    $('#admin-update').attr("selected", false)
+                    $('#user-update').attr("selected", false)
+                    if (user.role === "ADMIN") {
+                        $('#admin-update').attr("selected", true)
+                    } else {
+                        $('#user-update').attr("selected", true)
+                    }
+                    $('#id-update').val(user.id)
+                    $('.id-div-in-form').text(user.id)
+                    $('#name-update').val(user.name)
+                    $('#surname-update').val(user.surname)
+                    $('#age-update').val(user.age)
+                    $('#email-update').val(user.email)
+                }
+            )
+        });
+        $(document).on("click", ".btn-edit", function () {
+
+            let user = {
+                'id': $('#id-update').val(),
+                'name': $('#name-update').val(),
+                'surname': $('#surname-update').val(),
+                'age': $('#age-update').val(),
+                'email': $('#email-update').val(),
+                'password': $('#pass-update').val(),
+                'role': $('#roles').val()
+            }
+            let updateRequest = new Request('/api/users/' + $('#id-update').val(), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            })
+            let jsonUpdate = fetch(updateRequest).then(a => fetch('/api/users').then(r => {
+                return r.json()
+            }));
+            $('.users-table').html(" <tr>\n" +
+                "                <th>ID</th>\n" +
+                "                <th>First Name</th>\n" +
+                "                <th>Last Name</th>\n" +
+                "                <th>Age</th>\n" +
+                "                <th>Email</th>\n" +
+                "                <th>Role</th>\n" +
+                "                <th>Edit</th>\n" +
+                "                <th>Delete</th>\n" +
+                "            </tr>");
+
+            jsonUpdate.then(a => Array.from(a)).then(array =>
+                array.forEach(aa =>
+                    $('.users-table').append(
+                        "<tr class=\"dd\" style=\"background: #eee\">" +
+                        "<td>" + aa.id + "</td>" +
+                        "<td>" + aa.name + "</td>" +
+                        "<td>" + aa.surname + "</td>" +
+                        "<td>" + aa.age + "</td>" +
+                        "<td>" + aa.email + "</td>" +
+                        "<td>" + aa.role + "</td>" +
+                        "                    <td>\n" +
+                        "                        <button data-id='" + aa.id + "' type=\"button\"" +
+                        " class=\"btn-personal-update btn btn-info\"\n" +
+                        "                                data-toggle=\"modal\" data-target=\"#_update\">Edit\n" +
+                        "                        </button>\n" +
+                        "                    </td>\n" +
+                        "                    <td>\n" +
+                        "                        <button data-id='" + aa.id + "' type=\"button\" class=\"btn-personal-del btn btn-danger\"\n" +
+                        "                                data-toggle=\"modal\" data-target=\"#del_user\">Delete\n" +
+                        "                        </button>\n" +
+                        "                    </td>\n" +
+                        "                </tr>"
+                    )
+                ),
+            );
+        })
+        $(document).ready(function () {
+            WIDTH = $(window).width();
+            HEIGHT = $(window).height();
+
+
+            //*************************************************************************
+            //*************************************************************************
+            //*************************************************************************
+            let json = fetch('/api/users').then(r => {
+                return r.json()
+            });
+            json.then(a => Array.from(a)).then(array =>
+                array.forEach(aa =>
+                    $('.users-table').append(
+                        "<tr class=\"dd\" style=\"background: #eee; width: 100%\">" +
+                        "<td>" + aa.id + "</td>" +
+                        "<td>" + aa.name + "</td>" +
+                        "<td>" + aa.surname + "</td>" +
+                        "<td>" + aa.age + "</td>" +
+                        "<td>" + aa.email + "</td>" +
+                        "<td>" + aa.role + "</td>" +
+                        "<td><button data-id='" + aa.id + "' type=\"button\"" +
+                        " class=\"btn-personal-update btn btn-info\"\n" +
+                        "                                data-toggle=\"modal\" data-target=\"#_update\">Edit\n" +
+                        "                        </button>" +
+                        "</td>" +
+                        "<td>" +
+                        "<button data-id='" + aa.id + "' type=\"button\" class=\"btn-personal-del btn btn-danger\"" +
+                        "data-toggle=\"modal\" data-target=\"#del_user\">Delete" +
+                        "</button>" +
+                        "</td>" +
+                        "</tr>"
+                    )
+                ),
+            );
+            //*************************************************************************
+            //*************************************************************************
+            //*************************************************************************
+
+            //*************************************************************************
+            //*************************************************************************
+            //*************************************************************************
+
+
+            $('.main-row').css("height", HEIGHT - $('.top_info_div').height() + "px");
+            $('#add-new-user-btn').click(function () {
+                $(this).css({"color": "#000", "background": "#fff", "border-color": "#D5D1D1"});
+                $('#users-table-btn').css({
+                    "color": "#007bff",
+                    "background": "transparent",
+                    "border-color": "transparent"
+                });
+                $('.admin-page-content-wrapper').css("display", "none");
+                $('.add-new-user-content-wrapper').css("display", "block");
+            })
+            $('#users-table-btn').click(function () {
+                $(this).css({"color": "#000", "background": "#fff", "border-color": "#D5D1D1"});
+                $('#add-new-user-btn').css({
+                    "color": "#007bff",
+                    "background": "transparent",
+                    "border-color": "transparent"
+                });
+                $('.admin-page-content-wrapper').css("display", "block");
+                $('.add-new-user-content-wrapper').css("display", "none");
+            })
+
+            function sendRequest(method, url, body = null) {
+                return fetch(url).then(response => {
+                    return response.text()
+                })
+            }
+
+            $('.add-user').click(function () {
+                let user = {
+                    'name': $('#new-name').val(),
+                    'surname': $('#new-surname').val(),
+                    'age': $('#new-age').val(),
+                    'email': $('#new-email').val(),
+                    'password': $('#new-pass').val(),
+                    'role': $('#new-roles').val()
+                }
+                let addRequest = new Request('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user)
+                });
+                let json2 = fetch(addRequest).then(a => fetch('/api/users').then(r => {
+                    return r.json()
+                }));
+                $('.users-table').html(" <tr>\n" +
+                    "                <th>ID</th>\n" +
+                    "                <th>First Name</th>\n" +
+                    "                <th>Last Name</th>\n" +
+                    "                <th>Age</th>\n" +
+                    "                <th>Email</th>\n" +
+                    "                <th>Role</th>\n" +
+                    "                <th>Edit</th>\n" +
+                    "                <th>Delete</th>\n" +
+                    "            </tr>");
+
+                json2.then(a => Array.from(a)).then(array =>
+                        array.forEach(aa =>
+                            $('.users-table').append(
+                                "<tr class=\"dd\" style=\"background: #eee\">" +
+                                "<td>" + aa.id + "</td>" +
+                                "<td>" + aa.name + "</td>" +
+                                "<td>" + aa.surname + "</td>" +
+                                "<td>" + aa.age + "</td>" +
+                                "<td>" + aa.email + "</td>" +
+                                "<td>" + aa.role + "</td>" +
+                                "                    <td>\n" +
+                                "                        <button data-id='" + aa.id + "' type=\"button\"" +
+                                " class=\"btn-personal-update btn btn-info\"\n" +
+                                "                                data-toggle=\"modal\" data-target=\"#_update\">Edit\n" +
+                                "                        </button>\n" +
+                                "                    </td>\n" +
+                                "                    <td>\n" +
+                                "                        <button data-id='" + aa.id + "' type=\"button\" class=\"btn-personal-del btn btn-danger\"" +
+                                "data-toggle=\"modal\" data-target=\"#del_user\">Delete" +
+                                "</button>\n" +
+                                "                    </td>\n" +
+                                "                </tr>"
+                            )
+                        ),
+                    $('#users-table-btn').css({"color": "#000", "background": "#fff", "border-color": "#D5D1D1"}),
+                    $('#add-new-user-btn').css({
+                        "color": "#007bff",
+                        "background": "transparent",
+                        "border-color": "transparent"
+                    }),
+                    $('.admin-page-content-wrapper').css("display", "block"),
+                    $('.add-new-user-content-wrapper').css("display", "none")
+                );
+                $('#new-name').val('');
+                $('#new-surname').val('');
+                $('#new-age').val('');
+                $('#new-email').val('');
+                $('#new-pass').val('');
+                $('#new-admin').attr('selected', false);
+                $('#new-user').attr('selected', false);
+            })
+
+        });
+
+    </script>
 </footer>
