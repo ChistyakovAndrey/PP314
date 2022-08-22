@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Component
+@NamedEntityGraph(name = "User_graph", attributeNodes = @NamedAttributeNode("roles"))
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
@@ -27,7 +27,7 @@ public class User implements UserDetails {
     }
 
     private String role;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
